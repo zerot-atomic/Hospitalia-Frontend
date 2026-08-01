@@ -1,0 +1,321 @@
+/* ============================================================
+   HOSPITALIA - HOJA DE ESTILOS COMPARTIDA
+   Integrante 2 la escribe. Integrante 3 REUTILIZA estas clases
+   para la pantalla de Inventario (no crear CSS nuevo salvo
+   lo que falte: al final del archivo hay una seccion reservada).
+   ============================================================ */
+
+/* ---------- 1. Variables de diseño ---------- */
+:root {
+  --azul: #1266b5;
+  --azul-oscuro: #0d4d8a;
+  --azul-claro: #e8f1fa;
+  --verde: #16a34a;
+  --rojo: #dc2626;
+  --amarillo: #d97706;
+
+  --texto: #16232f;
+  --texto-suave: #64748b;
+  --borde: #dde5ee;
+  --fondo: #f4f7fb;
+  --panel: #ffffff;
+
+  --radio: 10px;
+  --sombra: 0 1px 3px rgba(16, 35, 60, .08), 0 6px 20px rgba(16, 35, 60, .06);
+  --fuente: "Segoe UI", Roboto, system-ui, sans-serif;
+}
+
+/* ---------- 2. Reset ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  background: var(--fondo);
+  color: var(--texto);
+  font-size: 15px;
+}
+h1, h2, h3 { margin: 0 0 .4rem; font-weight: 600; }
+a { color: var(--azul); }
+
+/* ---------- 3. Layout con sidebar (paginas internas) ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--azul-oscuro);
+  color: #fff;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.sidebar .marca {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.sidebar nav a {
+  display: block;
+  padding: .6rem .8rem;
+  border-radius: var(--radio);
+  color: #cfe2f5;
+  text-decoration: none;
+  font-size: .95rem;
+}
+.sidebar nav a:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.sidebar nav a.activo { background: var(--azul); color: #fff; font-weight: 600; }
+.sidebar .pie { margin-top: auto; font-size: .8rem; color: #9dc0e2; }
+
+.contenido { padding: 1.5rem 2rem 3rem; overflow-x: hidden; }
+
+/* ---------- 4. Barra superior ---------- */
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.barra-superior .subtitulo { color: var(--texto-suave); font-size: .9rem; }
+.usuario-actual {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-size: .9rem;
+}
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--azul-claro);
+  color: var(--azul-oscuro);
+  display: grid; place-items: center;
+  font-weight: 700;
+}
+
+/* ---------- 5. Tarjetas / paneles ---------- */
+.tarjeta {
+  background: var(--panel);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.tarjeta > h2 { font-size: 1.05rem; }
+.tarjeta .ayuda { color: var(--texto-suave); font-size: .85rem; margin: 0 0 1rem; }
+
+.rejilla-2 {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* Fila de indicadores (KPIs) reutilizable */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+.kpi { background: var(--panel); border: 1px solid var(--borde); border-radius: var(--radio); padding: .9rem 1rem; }
+.kpi .valor { font-size: 1.6rem; font-weight: 700; }
+.kpi .etiqueta { color: var(--texto-suave); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+
+/* ---------- 6. Formularios ---------- */
+.campo { margin-bottom: .9rem; }
+.campo label {
+  display: block;
+  font-size: .82rem;
+  font-weight: 600;
+  margin-bottom: .3rem;
+  color: #33465a;
+}
+input, select, textarea {
+  width: 100%;
+  padding: .6rem .7rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .92rem;
+  background: #fff;
+  color: var(--texto);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(18, 102, 181, .15);
+}
+textarea { resize: vertical; min-height: 70px; }
+.fila-campos { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+/* ---------- 7. Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  padding: .6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--azul);
+  color: #fff;
+}
+.btn:hover { background: var(--azul-oscuro); }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+.btn-secundario { background: #fff; color: var(--azul); border-color: var(--borde); }
+.btn-secundario:hover { background: var(--azul-claro); }
+.btn-peligro { background: var(--rojo); }
+.btn-peligro:hover { background: #b91c1c; }
+.btn-bloque { width: 100%; }
+.btn-mini { padding: .35rem .6rem; font-size: .8rem; }
+
+/* ---------- 8. Tablas (citas e inventario) ---------- */
+.tabla-scroll { overflow-x: auto; }
+table.tabla { width: 100%; border-collapse: collapse; font-size: .9rem; }
+table.tabla th, table.tabla td {
+  padding: .65rem .7rem;
+  text-align: left;
+  border-bottom: 1px solid var(--borde);
+  white-space: nowrap;
+}
+table.tabla th {
+  background: var(--azul-claro);
+  color: #24425f;
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+table.tabla tbody tr:hover { background: #f8fbff; }
+.acciones-fila { display: flex; gap: .4rem; }
+
+/* ---------- 9. Etiquetas de estado ---------- */
+.etiqueta {
+  display: inline-block;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+}
+.etiqueta-verde   { background: #dcfce7; color: #14532d; }
+.etiqueta-amarilla{ background: #fef3c7; color: #713f12; }
+.etiqueta-roja    { background: #fee2e2; color: #7f1d1d; }
+.etiqueta-azul    { background: var(--azul-claro); color: var(--azul-oscuro); }
+
+/* ---------- 10. Mensajes / avisos ---------- */
+.aviso {
+  padding: .7rem .9rem;
+  border-radius: 8px;
+  font-size: .88rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+.aviso-error { background: #fee2e2; color: #7f1d1d; border-color: #fca5a5; }
+.aviso-ok    { background: #dcfce7; color: #14532d; border-color: #86efac; }
+.aviso-info  { background: var(--azul-claro); color: #24425f; border-color: #bcd8f2; }
+.oculto { display: none !important; }
+
+.vacio {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: .9rem;
+}
+
+/* ---------- 11. Login ---------- */
+.pantalla-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--azul-oscuro), #123f6b 60%, #0a2c4d);
+}
+.caja-login {
+  width: 100%;
+  max-width: 380px;
+  background: var(--panel);
+  border-radius: 14px;
+  box-shadow: 0 20px 45px rgba(4, 22, 40, .35);
+  padding: 2rem;
+}
+.caja-login .marca-login {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.caja-login .marca-login .logo { font-size: 2rem; }
+.caja-login .marca-login h1 { font-size: 1.4rem; margin-top: .3rem; }
+.caja-login .marca-login p { color: var(--texto-suave); font-size: .86rem; margin: 0; }
+.pie-login { text-align: center; font-size: .78rem; color: var(--texto-suave); margin-top: 1.2rem; }
+
+/* ---------- 12. Mapa (Leaflet) ---------- */
+#mapa {
+  width: 100%;
+  height: 380px;
+  border-radius: var(--radio);
+  border: 1px solid var(--borde);
+  z-index: 0; /* evita que tape modales */
+}
+
+/* ---------- 13. Modal reutilizable ----------
+   Lo usa Citas y lo puede usar Inventario para
+   "Agregar medicamento" / "Editar stock".
+   Ver ayuda en js/ui.js -> UI.abrirModal("id") */
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 25, 41, .55);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+.modal {
+  background: var(--panel);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 460px;
+  padding: 1.4rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal .cabecera-modal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.cerrar-modal {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--texto-suave);
+}
+.pie-modal { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.2rem; }
+
+/* ---------- 14. Responsivo ---------- */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { flex-direction: row; align-items: center; flex-wrap: wrap; }
+  .sidebar .marca { margin: 0 1rem 0 0; }
+  .sidebar nav { display: flex; gap: .3rem; flex-wrap: wrap; }
+  .sidebar .pie { display: none; }
+  .rejilla-2 { grid-template-columns: 1fr; }
+  .contenido { padding: 1.25rem; }
+}
+
+/* ============================================================
+   15. ZONA RESERVADA - INTEGRANTE 3 (INVENTARIO)
+   Agrega aqui SOLO lo que no exista arriba.
+   No modifiques las secciones 1-14: las comparte todo el equipo.
+   ============================================================ */
+/* ejemplo:
+.badge-stock-bajo { ... }
+*/

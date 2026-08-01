@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospitalia | Citas</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- API de terceros: Leaflet (mapa) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR COMPARTIDO (copiar igual en inventario.html) ===== -->
+  <aside class="sidebar">
+    <div class="marca">&#127973; Hospitalia</div>
+    <nav>
+      <a href="citas.html" class="activo">Citas</a>
+      <a href="inventario.html">Inventario</a>
+    </nav>
+    <div class="pie">v1.0 &middot; Proyecto Hospitalia</div>
+  </aside>
+
+  <main class="contenido">
+
+    <!-- ===== BARRA SUPERIOR COMPARTIDA ===== -->
+    <header class="barra-superior">
+      <div>
+        <h1>Gestion de Citas</h1>
+        <p class="subtitulo">Agenda, consulta y cancela citas medicas</p>
+      </div>
+      <div class="usuario-actual">
+        <div class="avatar" id="avatarUsuario">U</div>
+        <span id="nombreUsuario">Usuario</span>
+        <button id="btnCerrarSesion" class="btn btn-secundario btn-mini">Salir</button>
+      </div>
+    </header>
+
+    <!-- ===== INDICADORES ===== -->
+    <section class="kpis" style="margin-bottom:1.25rem;">
+      <div class="kpi"><div class="valor" id="kpiTotal">0</div><div class="etiqueta">Citas totales</div></div>
+      <div class="kpi"><div class="valor" id="kpiPendientes">0</div><div class="etiqueta">Pendientes</div></div>
+      <div class="kpi"><div class="valor" id="kpiHoy">0</div><div class="etiqueta">Para hoy</div></div>
+    </section>
+
+    <div class="rejilla-2">
+
+      <!-- ===== FORMULARIO AGENDAR ===== -->
+      <section class="tarjeta">
+        <h2>Agendar cita</h2>
+        <p class="ayuda">Los campos con * son obligatorios.</p>
+
+        <div id="avisoFormCita" class="aviso oculto"></div>
+
+        <form id="formCita" novalidate>
+          <div class="campo">
+            <label for="paciente">Paciente *</label>
+            <input type="text" id="paciente" placeholder="Nombre completo" required>
+          </div>
+
+          <div class="campo">
+            <label for="medicoId">Medico</label>
+            <select id="medicoId">
+              <option value="">Cargando medicos...</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha y hora *</label>
+            <input type="datetime-local" id="fecha" required>
+          </div>
+
+          <div class="campo">
+            <label for="motivo">Motivo de consulta</label>
+            <textarea id="motivo" placeholder="Describe brevemente el motivo"></textarea>
+          </div>
+
+          <button type="submit" id="btnGuardarCita" class="btn btn-bloque">Agendar cita</button>
+        </form>
+      </section>
+
+      <!-- ===== TABLA DE CITAS ===== -->
+      <section class="tarjeta">
+        <div class="barra-superior" style="margin-bottom:.75rem;">
+          <h2>Citas registradas</h2>
+          <div style="display:flex; gap:.5rem;">
+            <select id="filtroEstado" style="width:auto;">
+              <option value="">Todos los estados</option>
+              <option value="Pendiente">Pendientes</option>
+              <option value="Atendida">Atendidas</option>
+              <option value="Cancelada">Canceladas</option>
+            </select>
+            <button id="btnRecargar" class="btn btn-secundario">Recargar</button>
+          </div>
+        </div>
+
+        <div id="avisoCitas" class="aviso oculto"></div>
+
+        <div class="tabla-scroll">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Paciente</th>
+                <th>Medico</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoTablaCitas">
+              <tr><td colspan="6" class="vacio">Cargando citas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== MAPA (Leaflet) ===== -->
+    <section class="tarjeta">
+      <div class="barra-superior" style="margin-bottom:.75rem;">
+        <div>
+          <h2>Sedes y ubicacion</h2>
+          <p class="ayuda" style="margin:0;">Mapa de OpenStreetMap con las sedes de Hospitalia.</p>
+        </div>
+        <button id="btnMiUbicacion" class="btn btn-secundario">Ver mi ubicacion</button>
+      </div>
+
+      <div id="avisoMapa" class="aviso oculto"></div>
+      <div id="mapa"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Librerias externas -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Orden de scripts: config -> ui -> api -> auth -> modulo (no cambiar) -->
+<script src="js/config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/citas.js"></script>
+<script src="js/mapa.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospitalia | Iniciar sesion</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <main class="pantalla-login">
+    <section class="caja-login">
+
+      <div class="marca-login">
+        <div class="logo">&#127973;</div>
+        <h1>Hospitalia</h1>
+        <p>Sistema de gestion hospitalaria</p>
+      </div>
+
+      <!-- Mensajes de error / exito -->
+      <div id="avisoLogin" class="aviso oculto"></div>
+
+      <form id="formLogin" novalidate>
+        <div class="campo">
+          <label for="correo">Correo electronico</label>
+          <input type="email" id="correo" name="correo"
+                 placeholder="usuario@hospitalia.hn" autocomplete="username" required>
+        </div>
+
+        <div class="campo">
+          <label for="contrasena">Contrasena</label>
+          <input type="password" id="contrasena" name="contrasena"
+                 placeholder="********" autocomplete="current-password" required>
+        </div>
+
+        <button type="submit" id="btnEntrar" class="btn btn-bloque">Entrar</button>
+      </form>
+
+      <p class="pie-login">Proyecto Hospitalia &middot; API Client</p>
+    </section>
+  </main>
+
+  <!-- Orden de scripts: config -> ui -> api -> auth (no cambiar) -->
+  <script src="js/config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
