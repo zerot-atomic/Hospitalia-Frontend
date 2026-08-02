@@ -1,0 +1,8 @@
+# Ignorar carpetas ocultas y configuraciones locales de Visual Studio
+.vs/
+*.user
+*.suo
+
+# Ignorar las carpetas de compilacion del backend en C#
+/backend/**/bin/
+/backend/**/obj/
