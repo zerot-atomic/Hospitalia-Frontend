@@ -42,20 +42,20 @@ js/inventario.js    Pendiente                    (lo sube el Integrante 3)
 5. El orden de los `<script>` no se cambia:
    `config -> ui -> api -> auth -> modulo`.
 
-## Contrato con la API (asumido)
+## Contrato con la API (OFICIAL)
 
-Si el backend usa otros nombres de campo, avisar para ajustar.
+**ATENCIÓN FRONTEND:** El backend ya está terminado. Ajusten su archivo `js/api.js`, `js/auth.js` y `js/config.js` para respetar exactamente estas rutas, las mayúsculas/minúsculas de los JSON y las respuestas.
 
 | Metodo | Ruta                    | Cuerpo / respuesta |
 |--------|-------------------------|--------------------|
-| POST   | `/usuarios/login`       | `{ correo, contrasena }` -> `{ token, usuario }` |
+| POST   | `/usuarios`             | `{ correo, contrasena }` -> `{ usuario }` |
 | GET    | `/usuarios`             | lista de usuarios (para el select de medicos) |
 | GET    | `/citas`                | lista de citas |
-| POST   | `/citas`                | `{ pacienteNombre, medicoId, fecha, motivo, estado }` |
+| POST   | `/citas`                | `{ PacienteNombre, Id_Medico, Fecha, Motivo, Estado }` |
 | PUT    | `/citas/{id}`           | cita completa |
 | DELETE | `/citas/{id}`           | 204 |
 | GET    | `/medicamentos`         | lista de medicamentos |
-| POST   | `/medicamentos`         | `{ nombre, descripcion, stock, precio, fechaVencimiento }` |
+| POST   | `/medicamentos`         | `{ nombreComercial, laboratorio, presentacion, descripcion, precio, stock }` |
 | PUT    | `/medicamentos/{id}`    | medicamento completo |
 | DELETE | `/medicamentos/{id}`    | 204 |
 
