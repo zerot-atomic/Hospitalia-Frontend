@@ -132,14 +132,17 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\CitaController.cs" />
     <Compile Include="Controllers\MedicamentoController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
+    <Compile Include="Data\CitaDAO.cs" />
     <Compile Include="Data\MedicamentoDAO.cs" />
     <Compile Include="Data\UsuarioDAO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handlers\PreflightRequestsHandler.cs" />
+    <Compile Include="Models\Cita.cs" />
     <Compile Include="Models\Medicamento.cs" />
     <Compile Include="Models\Usuarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
