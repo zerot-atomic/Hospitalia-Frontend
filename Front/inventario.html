@@ -35,7 +35,7 @@
       </div>
     </header>
 
-    <!-- ===== INDICADORES (opcional: llenar desde inventario.js) ===== -->
+    <!-- ===== INDICADORES ===== -->
     <section class="kpis" style="margin-bottom:1.25rem;">
       <div class="kpi"><div class="valor" id="kpiTotalMedicamentos">0</div><div class="etiqueta">Medicamentos</div></div>
       <div class="kpi"><div class="valor" id="kpiStockBajo">0</div><div class="etiqueta">Stock bajo</div></div>
@@ -47,10 +47,10 @@
       <div class="barra-superior" style="margin-bottom:.75rem;">
         <div>
           <h2>Medicamentos</h2>
-          <p class="ayuda" style="margin:0;">Datos tomados de la API de Medicamentos.</p>
+          <p class="ayuda" style="margin:0;">Datos sincronizados con la API de C#.</p>
         </div>
         <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
-          <input type="search" id="buscador" placeholder="Buscar medicamento..." style="width:220px;">
+          <input type="search" id="buscador" placeholder="Buscar por nombre..." style="width:220px;">
           <button id="btnRecargarInventario" class="btn btn-secundario">Recargar</button>
           <button id="btnNuevoMedicamento" class="btn">+ Agregar nuevo medicamento</button>
         </div>
@@ -62,19 +62,18 @@
         <table class="tabla">
           <thead>
             <tr>
+              <!-- Ajustado a la estructura de la base de datos real -->
               <th>ID</th>
-              <th>Nombre</th>
-              <th>Descripcion</th>
+              <th>Nombre Comercial</th>
+              <th>Laboratorio</th>
+              <th>Presentación</th>
               <th>Stock</th>
               <th>Precio</th>
-              <th>Vencimiento</th>
-              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
-          <!-- INTEGRANTE 3: llena este tbody desde js/inventario.js -->
           <tbody id="cuerpoTablaInventario">
-            <tr><td colspan="8" class="vacio">Aqui se pintan los medicamentos (pendiente Integrante 3).</td></tr>
+            <tr><td colspan="7" class="vacio">Cargando inventario...</td></tr>
           </tbody>
         </table>
       </div>
@@ -85,8 +84,6 @@
 
 <!-- ============================================================
      MODAL AGREGAR / EDITAR MEDICAMENTO
-     Ya maquetado. Se abre con UI.abrirModal("modalMedicamento")
-     y se cierra con UI.cerrarModal("modalMedicamento").
      ============================================================ -->
 <div class="fondo-modal oculto" id="modalMedicamento">
   <div class="modal">
@@ -98,17 +95,27 @@
     <div id="avisoModal" class="aviso oculto"></div>
 
     <form id="formMedicamento" novalidate>
-      <!-- id oculto: vacio = crear (POST), con valor = editar (PUT) -->
       <input type="hidden" id="medicamentoId">
 
       <div class="campo">
-        <label for="nombreMedicamento">Nombre *</label>
+        <label for="nombreMedicamento">Nombre Comercial *</label>
         <input type="text" id="nombreMedicamento" placeholder="Ej: Paracetamol 500mg" required>
       </div>
 
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="laboratorioMedicamento">Laboratorio</label>
+          <input type="text" id="laboratorioMedicamento" placeholder="Ej: Bayer">
+        </div>
+        <div class="campo">
+          <label for="presentacionMedicamento">Presentación</label>
+          <input type="text" id="presentacionMedicamento" placeholder="Ej: Caja con 20 tabletas">
+        </div>
+      </div>
+
       <div class="campo">
-        <label for="descripcionMedicamento">Descripcion</label>
-        <textarea id="descripcionMedicamento" placeholder="Presentacion, laboratorio, notas"></textarea>
+        <label for="descripcionMedicamento">Descripción</label>
+        <textarea id="descripcionMedicamento" placeholder="Notas adicionales del medicamento"></textarea>
       </div>
 
       <div class="fila-campos">
@@ -122,11 +129,6 @@
         </div>
       </div>
 
-      <div class="campo">
-        <label for="vencimientoMedicamento">Fecha de vencimiento</label>
-        <input type="date" id="vencimientoMedicamento">
-      </div>
-
       <div class="pie-modal">
         <button type="button" class="btn btn-secundario" id="btnCancelarModal">Cancelar</button>
         <button type="submit" class="btn" id="btnGuardarMedicamento">Guardar</button>
@@ -135,7 +137,6 @@
   </div>
 </div>
 
-<!-- Orden de scripts: config -> ui -> api -> auth -> modulo (no cambiar) -->
 <script src="js/config.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/api.js"></script>

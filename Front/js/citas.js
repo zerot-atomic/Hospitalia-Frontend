@@ -1,6 +1,5 @@
 /* ============================================================
-   MODULO CITAS - Integrante 2
-   Consume la API de Citas y Usuarios con fetch() (via api.js).
+   MODULO CITAS - Integrante 2 (Corregido para hacer match con C#)
    ============================================================ */
 
 let citasEnMemoria = [];
@@ -8,15 +7,9 @@ let citasEnMemoria = [];
 document.addEventListener("DOMContentLoaded", () => {
   if (!Auth.protegerPagina()) return;
 
-  document
-    .getElementById("formCita")
-    .addEventListener("submit", guardarCita);
-  document
-    .getElementById("btnRecargar")
-    .addEventListener("click", cargarCitas);
-  document
-    .getElementById("filtroEstado")
-    .addEventListener("change", pintarCitas);
+  document.getElementById("formCita").addEventListener("submit", guardarCita);
+  document.getElementById("btnRecargar").addEventListener("click", cargarCitas);
+  document.getElementById("filtroEstado").addEventListener("change", pintarCitas);
 
   ponerFechaMinimaHoy();
   cargarMedicos();
@@ -31,26 +24,27 @@ function ponerFechaMinimaHoy() {
   campo.min = ahora.toISOString().slice(0, 16);
 }
 
-/* ---------- Cargar medicos en el <select> ---------- */
+/* ---------- Cargar médicos en el <select> ---------- */
 async function cargarMedicos() {
   const select = document.getElementById("medicoId");
   try {
     const usuarios = await UsuariosService.listar();
+    
+    // Tu backend devuelve 'Rol', no 'rol'. Y el rol es 'Medico' o 'Médico'
     const medicos = (usuarios || []).filter(
-      (u) => (u.rol || u.tipo || "").toLowerCase().includes("medic")
+      (u) => (u.Rol || "").toLowerCase().includes("medic")
     );
-    const lista = medicos.length ? medicos : usuarios || [];
 
-    select.innerHTML = '<option value="">Selecciona un medico</option>';
-    lista.forEach((m) => {
+    select.innerHTML = '<option value="">Selecciona un médico</option>';
+    medicos.forEach((m) => {
       const opcion = document.createElement("option");
-      opcion.value = m.id ?? m.usuarioId ?? "";
-      opcion.textContent = m.nombre || m.correo || "Medico " + opcion.value;
+      // Tu backend devuelve Id_Usuario y Nombre
+      opcion.value = m.Id_Usuario;
+      opcion.textContent = m.Nombre;
       select.appendChild(opcion);
     });
   } catch (error) {
-    // Si el endpoint de usuarios aun no existe, se escribe el nombre a mano.
-    select.innerHTML = '<option value="">(sin lista, escribe el nombre)</option>';
+    select.innerHTML = '<option value="">(Error al cargar médicos)</option>';
     console.warn("No se pudieron cargar medicos:", error.message);
   }
 }
@@ -77,7 +71,8 @@ function pintarCitas() {
 
   const lista = citasEnMemoria.filter((c) => {
     if (!filtro) return true;
-    return (c.estado || "Pendiente").toLowerCase() === filtro.toLowerCase();
+    // Tu backend devuelve 'Estado'
+    return (c.Estado || "Pendiente").toLowerCase() === filtro.toLowerCase();
   });
 
   if (!lista.length) {
@@ -87,31 +82,54 @@ function pintarCitas() {
 
   tbody.innerHTML = lista
     .map((c) => {
-      const id = c.id ?? c.citaId ?? "";
-      const estado = c.estado || "Pendiente";
+      // Usamos exactamente los nombres que devuelve tu C#
+      const id = c.Id_Cita;
+      const estado = c.Estado || "Pendiente";
+      
       return (
         "<tr>" +
         "<td>#" + UI.escapar(id) + "</td>" +
-        "<td>" + UI.escapar(c.pacienteNombre || c.paciente || "-") + "</td>" +
-        "<td>" + UI.escapar(c.medicoNombre || c.medico || c.medicoId || "-") + "</td>" +
-        "<td>" + UI.formatoFecha(c.fecha || c.fechaHora) + "</td>" +
+        "<td>" + UI.escapar(c.PacienteNombre) + "</td>" +
+        // El frontend no tiene los nombres de los doctores en la tabla citas, solo el Id.
+        // Así que mostramos el ID por ahora para que no truene.
+        "<td>Doctor ID: " + UI.escapar(c.Id_Medico) + "</td>" +
+        "<td>" + UI.formatoFecha(c.Fecha) + "</td>" +
         "<td>" + etiquetaEstado(estado) + "</td>" +
         '<td><div class="acciones-fila">' +
-        '<button class="btn btn-secundario btn-mini" data-accion="atender" data-id="' + UI.escapar(id) + '">Atender</button>' +
-        '<button class="btn btn-peligro btn-mini" data-accion="cancelar" data-id="' + UI.escapar(id) + '">Cancelar</button>' +
+        '<button class="btn btn-secundario btn-mini" data-accion="atender" data-id="' + id + '">Atender</button>' +
+        '<button class="btn btn-peligro btn-mini" data-accion="cancelar" data-id="' + id + '">Eliminar</button>' +
         "</div></td>" +
         "</tr>"
       );
     })
     .join("");
 
+  // Agregar los event listeners de los botones
   tbody.querySelectorAll("button[data-accion]").forEach((boton) => {
     boton.addEventListener("click", () => {
-      const id = boton.dataset.id;
+      const id = parseInt(boton.dataset.id);
       if (boton.dataset.accion === "cancelar") cancelarCita(id);
       else cambiarEstado(id, "Atendida");
     });
   });
+
+  // --- PARCHE DE ROLES (CITAS) ---
+  const usuarioActual = Auth.usuario() || {};
+  const rol = usuarioActual.Rol || "";
+
+  // Si es Medico, le quitamos el botón de Cancelar
+  if (rol === "Medico") {
+    document.querySelectorAll("button[data-accion='cancelar']").forEach(btn => {
+      btn.style.display = "none";
+    });
+  }
+  
+  // Si es Recepcionista, le quitamos el botón de Atender (eso lo hace el doctor)
+  if (rol === "Recepcionista") {
+    document.querySelectorAll("button[data-accion='atender']").forEach(btn => {
+      btn.style.display = "none";
+    });
+  }
 }
 
 function etiquetaEstado(estado) {
@@ -126,11 +144,12 @@ function etiquetaEstado(estado) {
 function actualizarIndicadores() {
   const total = citasEnMemoria.length;
   const pendientes = citasEnMemoria.filter((c) =>
-    (c.estado || "Pendiente").toLowerCase().includes("pend")
+    (c.Estado || "Pendiente").toLowerCase().includes("pend")
   ).length;
+  
   const hoy = new Date().toDateString();
   const deHoy = citasEnMemoria.filter((c) => {
-    const f = new Date(c.fecha || c.fechaHora);
+    const f = new Date(c.Fecha);
     return !isNaN(f) && f.toDateString() === hoy;
   }).length;
 
@@ -145,16 +164,18 @@ async function guardarCita(evento) {
   UI.limpiarAviso("avisoFormCita");
 
   const boton = document.getElementById("btnGuardarCita");
+  
+  // Aquí es VITAL usar los nombres EXACTOS de tu modelo de C#
   const cita = {
-    pacienteNombre: document.getElementById("paciente").value.trim(),
-    medicoId: document.getElementById("medicoId").value || null,
-    fecha: document.getElementById("fecha").value,
-    motivo: document.getElementById("motivo").value.trim(),
-    estado: "Pendiente",
+    PacienteNombre: document.getElementById("paciente").value.trim(),
+    Id_Medico: parseInt(document.getElementById("medicoId").value) || 0,
+    Fecha: document.getElementById("fecha").value,
+    Motivo: document.getElementById("motivo").value.trim(),
+    Estado: "Pendiente"
   };
 
-  if (!cita.pacienteNombre || !cita.fecha) {
-    UI.aviso("avisoFormCita", "Paciente y fecha son obligatorios.", "error");
+  if (!cita.PacienteNombre || !cita.Fecha || cita.Id_Medico === 0) {
+    UI.aviso("avisoFormCita", "Paciente, Médico y Fecha son obligatorios.", "error");
     return;
   }
 
@@ -163,7 +184,7 @@ async function guardarCita(evento) {
     await CitasService.crear(cita);
     document.getElementById("formCita").reset();
     UI.aviso("avisoFormCita", "Cita agendada correctamente.", "ok");
-    cargarCitas();
+    cargarCitas(); // Recarga la tabla
   } catch (error) {
     UI.aviso("avisoFormCita", error.message, "error");
   } finally {
@@ -171,24 +192,33 @@ async function guardarCita(evento) {
   }
 }
 
-/* ---------- Cambiar estado / cancelar ---------- */
-async function cambiarEstado(id, estado) {
-  const cita = citasEnMemoria.find((c) => String(c.id ?? c.citaId) === String(id));
-  if (!cita) return;
+/* ---------- Cambiar estado / actualizar ---------- */
+async function cambiarEstado(id, nuevoEstado) {
+  // Buscamos la cita completa original
+  const citaOriginal = citasEnMemoria.find((c) => c.Id_Cita === id);
+  if (!citaOriginal) return;
+
+  // Creamos una copia y le cambiamos solo el estado
+  const citaActualizada = Object.assign({}, citaOriginal, { Estado: nuevoEstado });
+  
   try {
-    await CitasService.actualizar(id, Object.assign({}, cita, { estado }));
+    // Hacemos el PUT a tu API mandando el objeto con el estado nuevo
+    await CitasService.actualizar(id, citaActualizada);
     cargarCitas();
   } catch (error) {
     UI.aviso("avisoCitas", error.message, "error");
   }
 }
 
+/* ---------- Eliminar Cita ---------- */
 async function cancelarCita(id) {
-  if (!confirm("Cancelar la cita #" + id + "?")) return;
+  if (!confirm("¿Seguro que deseas eliminar la cita #" + id + " por completo?")) return;
+  
   try {
+    // Aquí mandamos a llamar tu endpoint DELETE
     await CitasService.eliminar(id);
-    UI.aviso("avisoCitas", "Cita #" + id + " cancelada.", "ok");
-    cargarCitas();
+    UI.aviso("avisoCitas", "Cita #" + id + " eliminada correctamente.", "ok");
+    cargarCitas(); // Recargamos la tabla para que desaparezca
   } catch (error) {
     UI.aviso("avisoCitas", error.message, "error");
   }
