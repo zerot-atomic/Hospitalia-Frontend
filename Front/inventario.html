@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospitalia | Inventario de Farmacia</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ===== SIDEBAR (igual que citas.html) ===== -->
+  <aside class="sidebar">
+    <div class="marca">&#127973; Hospitalia</div>
+    <nav>
+      <a href="citas.html">Citas</a>
+      <a href="inventario.html" class="activo">Inventario</a>
+    </nav>
+    <div class="pie">v1.0 &middot; Proyecto Hospitalia</div>
+  </aside>
+
+  <main class="contenido">
+
+    <!-- ===== BARRA SUPERIOR ===== -->
+    <header class="barra-superior">
+      <div>
+        <h1>Inventario de Farmacia</h1>
+        <p class="subtitulo">Alta, edicion de stock y baja de medicamentos</p>
+      </div>
+      <div class="usuario-actual">
+        <div class="avatar" id="avatarUsuario">U</div>
+        <span id="nombreUsuario">Usuario</span>
+        <button id="btnCerrarSesion" class="btn btn-secundario btn-mini">Salir</button>
+      </div>
+    </header>
+
+    <!-- ===== INDICADORES (opcional: llenar desde inventario.js) ===== -->
+    <section class="kpis" style="margin-bottom:1.25rem;">
+      <div class="kpi"><div class="valor" id="kpiTotalMedicamentos">0</div><div class="etiqueta">Medicamentos</div></div>
+      <div class="kpi"><div class="valor" id="kpiStockBajo">0</div><div class="etiqueta">Stock bajo</div></div>
+      <div class="kpi"><div class="valor" id="kpiAgotados">0</div><div class="etiqueta">Agotados</div></div>
+    </section>
+
+    <!-- ===== TABLA DE MEDICAMENTOS ===== -->
+    <section class="tarjeta">
+      <div class="barra-superior" style="margin-bottom:.75rem;">
+        <div>
+          <h2>Medicamentos</h2>
+          <p class="ayuda" style="margin:0;">Datos tomados de la API de Medicamentos.</p>
+        </div>
+        <div style="display:flex; gap:.5rem; flex-wrap:wrap;">
+          <input type="search" id="buscador" placeholder="Buscar medicamento..." style="width:220px;">
+          <button id="btnRecargarInventario" class="btn btn-secundario">Recargar</button>
+          <button id="btnNuevoMedicamento" class="btn">+ Agregar nuevo medicamento</button>
+        </div>
+      </div>
+
+      <div id="avisoInventario" class="aviso oculto"></div>
+
+      <div class="tabla-scroll">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripcion</th>
+              <th>Stock</th>
+              <th>Precio</th>
+              <th>Vencimiento</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <!-- INTEGRANTE 3: llena este tbody desde js/inventario.js -->
+          <tbody id="cuerpoTablaInventario">
+            <tr><td colspan="8" class="vacio">Aqui se pintan los medicamentos (pendiente Integrante 3).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     MODAL AGREGAR / EDITAR MEDICAMENTO
+     Ya maquetado. Se abre con UI.abrirModal("modalMedicamento")
+     y se cierra con UI.cerrarModal("modalMedicamento").
+     ============================================================ -->
+<div class="fondo-modal oculto" id="modalMedicamento">
+  <div class="modal">
+    <div class="cabecera-modal">
+      <h2 id="tituloModal">Agregar medicamento</h2>
+      <button class="cerrar-modal" id="btnCerrarModal" type="button">&times;</button>
+    </div>
+
+    <div id="avisoModal" class="aviso oculto"></div>
+
+    <form id="formMedicamento" novalidate>
+      <!-- id oculto: vacio = crear (POST), con valor = editar (PUT) -->
+      <input type="hidden" id="medicamentoId">
+
+      <div class="campo">
+        <label for="nombreMedicamento">Nombre *</label>
+        <input type="text" id="nombreMedicamento" placeholder="Ej: Paracetamol 500mg" required>
+      </div>
+
+      <div class="campo">
+        <label for="descripcionMedicamento">Descripcion</label>
+        <textarea id="descripcionMedicamento" placeholder="Presentacion, laboratorio, notas"></textarea>
+      </div>
+
+      <div class="fila-campos">
+        <div class="campo">
+          <label for="stockMedicamento">Stock *</label>
+          <input type="number" id="stockMedicamento" min="0" step="1" value="0" required>
+        </div>
+        <div class="campo">
+          <label for="precioMedicamento">Precio</label>
+          <input type="number" id="precioMedicamento" min="0" step="0.01" value="0">
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="vencimientoMedicamento">Fecha de vencimiento</label>
+        <input type="date" id="vencimientoMedicamento">
+      </div>
+
+      <div class="pie-modal">
+        <button type="button" class="btn btn-secundario" id="btnCancelarModal">Cancelar</button>
+        <button type="submit" class="btn" id="btnGuardarMedicamento">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Orden de scripts: config -> ui -> api -> auth -> modulo (no cambiar) -->
+<script src="js/config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/inventario.js"></script>
+</body>
+</html>
