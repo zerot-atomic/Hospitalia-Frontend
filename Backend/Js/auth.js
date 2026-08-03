@@ -1,9 +1,3 @@
-/* ============================================================
-   AUTENTICACION - Integrante 2
-   Guarda token/usuario en sessionStorage y protege las paginas.
-   Inventario (Integrante 3) solo llama Auth.protegerPagina().
-   ============================================================ */
-
 const Auth = {
   guardarSesion(token, usuario) {
     sessionStorage.setItem(CONFIG.STORAGE.TOKEN, token || "");

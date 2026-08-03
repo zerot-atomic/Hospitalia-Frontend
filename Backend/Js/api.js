@@ -1,9 +1,3 @@
-/* ============================================================
-   CAPA API - fetch() centralizado
-   Integrante 2 (Citas/Usuarios) e Integrante 3 (Medicamentos)
-   usan ESTAS funciones. No hagan fetch() suelto en sus modulos.
-   ============================================================ */
-
 /**
  * Devuelve headers base + Authorization si hay token guardado.
  */
@@ -104,13 +98,6 @@ const CitasService = {
   eliminar: (id) => Api.eliminar(CONFIG.ENDPOINTS.CITAS + "/" + id),
 };
 
-/* ------------------------------------------------------------
-   ZONA INTEGRANTE 3 - MEDICAMENTOS (INVENTARIO)
-   Ya esta cableado contra CONFIG.ENDPOINTS.MEDICAMENTOS.
-   Si la API del Integrante 1 usa otras rutas, ajusta config.js.
-   Usalo desde js/inventario.js asi:
-       const lista = await MedicamentosService.listar();
-   ------------------------------------------------------------ */
 const MedicamentosService = {
   listar: () => Api.obtener(CONFIG.ENDPOINTS.MEDICAMENTOS),
   obtener: (id) => Api.obtener(CONFIG.ENDPOINTS.MEDICAMENTOS + "/" + id),
