@@ -32,5 +32,11 @@ namespace Apis_Hospitalia.Controllers
             // Si el DAO devolvió null (contraseña o correo equivocados)
             return Unauthorized(); // Devuelve un error 401
         }
+
+        // GET: api/usuarios
+        public IEnumerable<Usuarios> Get()
+        {
+            return dao.GetAll();
+        }
     }
 }

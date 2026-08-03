@@ -41,5 +41,32 @@ namespace Apis_Hospitalia.Data
             }
             return u; // Si las credenciales están mal, devolverá null
         }
+
+
+        // OBTENER TODOS LOS USUARIOS
+        public List<Usuarios> GetAll()
+        {
+            List<Usuarios> lista = new List<Usuarios>();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                // Solo pedimos los campos seguros, ignorando la contraseña
+                string query = "SELECT Id_Usuario, Nombre, Correo, Rol FROM Usuarios";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    lista.Add(new Usuarios()
+                    {
+                        Id_Usuario = (int)reader["Id_Usuario"],
+                        Nombre = reader["Nombre"].ToString(),
+                        Correo = reader["Correo"].ToString(),
+                        Rol = reader["Rol"].ToString()
+                    });
+                }
+            }
+            return lista;
+        }
     }
 }
